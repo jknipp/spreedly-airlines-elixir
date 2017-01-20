@@ -1,0 +1,46 @@
+<nav class="navbar navbar-default">
+  <div class="container-fluid">
+    <!-- Brand and toggle get grouped for better mobile display -->
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+      </button>
+    </div>
+
+    <!-- Collect the nav links, forms, and other content for toggling -->
+    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+      <ul class="nav navbar-nav">
+        <li class="active"><a href="#">Link <span class="sr-only">(current)</span></a></li>
+        <li><a href="#">Link</a></li>
+      </ul>
+      
+    </div><!-- /.navbar-collapse -->
+  </div><!-- /.container-fluid -->
+</nav>
+<div>
+  <table class="table table-striped">
+    <thead>
+      <tr>  
+        <th>Flight Number</th>
+        <th>Airline</th>
+        <th>From</th>
+        <th>To</th>
+        <th>Price</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      <%= for f <- @flights do %>
+      <tr> 
+        <th scope="row"><%= f.number %></th> 
+        <td><%= f.airline %></td>
+        <td><%= f.from %></td>
+        <td><%= f.to %></td>
+        <td><%= Number.Currency.number_to_currency(f.price) %></td>
+        <td><%= link("Buy", to: "/", class: "btn btn-primary btn-xs", role: "button")%></td>
+      </tr>
+      <% end %>
+    </tbody>
+  </table>
+
+</div>
