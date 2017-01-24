@@ -1,6 +1,6 @@
 <div class="jumbotron">
   <h2><%= gettext "Welcome to %{name}", name: "Spreedly Airlines!" %></h2>
   <p class="lead">A superior airline that uses Spreedly to communicate with your payment gateways and payments endpoints.</p>
-  <p><a href="<%= page_url(@conn, :flights)%>" class="btn btn-primary btn-lg" role="button">Find Flights</a></p>
+  <p><a href="<%= flight_path(@conn, :index)%>" class="btn btn-primary btn-lg" role="button">Find Flights</a></p>
 </div>
 

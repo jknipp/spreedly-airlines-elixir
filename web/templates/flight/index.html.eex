@@ -1,4 +1,6 @@
 <div>
+  <h2>Spreedly Airlines Flights</h2>
+
   <table class="table table-striped">
     <thead>
       <tr>  
@@ -6,22 +8,23 @@
         <th>Airline</th>
         <th>From</th>
         <th>To</th>
-        <th>Price</th>
+        <th>Total Price</th>
         <th></th>
       </tr>
     </thead>
     <tbody>
-      <%= for f <- @flights do %>
+      <%= for {id, f} <- flights() do %>
       <tr> 
         <th scope="row"><%= f.number %></th> 
         <td><%= f.airline %></td>
         <td><%= f.from %></td>
         <td><%= f.to %></td>
         <td><%= Number.Currency.number_to_currency(f.price) %></td>
-        <td><%= link("Buy", to: "/", class: "btn btn-primary btn-xs", role: "button")%></td>
+        <td><%= link("Buy", to: flight_path(@conn, :show, id), class: "btn btn-primary btn-xs", role: "button")%></td>
       </tr>
       <% end %>
     </tbody>
   </table>
 
 </div>
+

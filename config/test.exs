@@ -7,4 +7,11 @@ config :spreedly_airlines_elixir, SpreedlyAirlinesElixir.Endpoint,
   server: false
 
 # Print only warnings and errors during test
-config :logger, level: :warn
+# Update to print other messages
+config :logger, level: :debug
+
+# Spreedly settings
+config :spreedly_airlines_elixir, SpreedlyAirlinesElixir.Endpoint,
+  base_url: "https://core.spreedly.com",
+  env_key: "VoypMN17B1VZQcWsxkoKIW2hvbU",
+  access_secret: "9ifOr8xjla71SAklGvxyf4lJgfMWUKM9MGCsODKxdz1tTkQFEiznAlQ9xpfCEO4a"

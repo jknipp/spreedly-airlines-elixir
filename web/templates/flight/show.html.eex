@@ -1,0 +1,67 @@
+<div class="panel panel-primary">
+  <div class="panel-heading">
+    <h3 class="panel-title">Flight Info</h3>
+  </div>
+  <div class="panel-body">
+    <dl class="dl-horizontal">
+      <dt>Airline</dt>
+      <dd id="airline"><%= @flight.airline %></dd>
+    </dl>
+    <dl class="dl-horizontal">
+      <dt>Flight Number</dt>
+      <dd id="flight_number">#<%= @flight.number %></dd>
+    </dl>
+    <dl class="dl-horizontal">
+      <dt>Flight Info</dt>
+      <dd id="flight_info"><%= @flight.from %> to <%= @flight.to %></dd>
+    </dl>
+    <dl class="dl-horizontal">
+      <dt>Trip Total</dt>
+      <dd id="total"><%= Number.Currency.number_to_currency(@flight.price) %></dd>
+    </dl>
+  </div>
+</div>
+
+<div class="panel panel-primary">
+  <div class="panel-heading">
+    <h3 class="panel-title">Passenger Info</h3>
+  </div>
+  <div class="panel-body">
+
+    <%= form_for @conn, "", [class: "form-horizontal", id: :flight_form,  as: :flight_form], fn form -> %>
+      <div class="form-group">
+        <label for="inputFullName" class="col-sm-2 control-label">Full Name</label>
+        <div class="col-sm-10">
+          <%= email_input(form, :full_name, [class: "form-control", placeholder: "Full Name"]) %>
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="inputEmail" class="col-sm-2 control-label">Email</label>
+        <div class="col-sm-10">
+          <%= email_input(form, :email, [class: "form-control", placeholder: "Email"]) %>
+        </div>
+      </div>
+      <div class="form-group">
+        <div class="col-sm-offset-2 col-sm-10">
+          <div class="checkbox">
+            <label>
+              <%= checkbox(form, :save_payment_info) %> Save payment method
+            </label>
+          </div>
+        </div>
+      </div>
+      <%= hidden_input(form, :id, value: @id) %>
+      <%= hidden_input(form, :payment_method_token) %>
+      <div class="form-group">
+        <div class="col-sm-offset-2 col-sm-10">
+          <button type="button" class="btn btn-primary" onclick="handlePurchase();">Checkout</button>
+        </div>
+      </div>
+    <% end %>
+  </div>
+</div>
+
+
+<div>
+  <%= link "View Flights", to: flight_path(@conn, :index) %>
+</div>

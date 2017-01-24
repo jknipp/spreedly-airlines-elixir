@@ -15,19 +15,12 @@
     <div class="container">
       <nav class="navbar navbar-default">
         <div class="container-fluid">
-          <!-- Brand and toggle get grouped for better mobile display -->
-          <div class="navbar-header">
-            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
-              <span class="sr-only">Toggle navigation</span>
-            </button>
-          </div>
-
           <!-- Collect the nav links, forms, and other content for toggling -->
           <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
             <ul class="nav navbar-nav">
-              <li><a href="<%= page_url(@conn, :index)%>">Home</a></li>
-              <li><a href="<%= page_url(@conn, :flights)%>">Find Flights</a></li>
-              <li><a href="<%= page_url(@conn, :transactions)%>">View Transactions</a></li>
+              <li><a href="<%= page_path(@conn, :index)%>">Home</a></li>
+              <li><a href="<%= flight_path(@conn, :index)%>">Find Flights</a></li>
+              <li><a href="<%= transaction_path(@conn, :index)%>">View Transactions</a></li>
             </ul>
             
           </div><!-- /.navbar-collapse -->
@@ -42,6 +35,7 @@
       </main>
 
     </div> <!-- /container -->
+    <script src="https://core.spreedly.com/iframe/express-2.min.js"></script>
     <script src="<%= static_path(@conn, "/js/app.js") %>"></script>
   </body>
 </html>

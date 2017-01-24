@@ -32,3 +32,9 @@ config :logger, :console, format: "[$level] $message\n"
 # Set a higher stacktrace during development. Avoid configuring such
 # in production as building large stacktraces may be expensive.
 config :phoenix, :stacktrace_depth, 20
+
+# Spreedly settings
+config :spreedly_airlines_elixir, SpreedlyAirlinesElixir.Endpoint,
+  base_url: "https://core.spreedly.com",
+  env_key: "VoypMN17B1VZQcWsxkoKIW2hvbU",
+  access_secret: "9ifOr8xjla71SAklGvxyf4lJgfMWUKM9MGCsODKxdz1tTkQFEiznAlQ9xpfCEO4a"

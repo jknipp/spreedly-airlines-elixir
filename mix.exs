@@ -17,7 +17,7 @@ defmodule SpreedlyAirlinesElixir.Mixfile do
   # Type `mix help compile.app` for more information.
   def application do
     [mod: {SpreedlyAirlinesElixir, []},
-     applications: [:phoenix, :phoenix_pubsub, :phoenix_html, :cowboy, :logger, :gettext, :number]]
+     applications: [:phoenix, :phoenix_pubsub, :phoenix_html, :cowboy, :logger, :gettext, :number, :httpoison, :poison]]
   end
 
   # Specifies which paths to compile per environment.
@@ -34,6 +34,8 @@ defmodule SpreedlyAirlinesElixir.Mixfile do
      {:phoenix_live_reload, "~> 1.0", only: :dev},
      {:gettext, "~> 0.11"},
      {:cowboy, "~> 1.0"},
-     {:number, "~> 0.4.2"}]
+     {:number, "~> 0.4.2"},
+     {:httpoison, "~> 0.10.0"},
+     {:poison, "~> 2.0"}]
   end
 end

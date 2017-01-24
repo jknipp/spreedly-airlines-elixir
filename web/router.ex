@@ -17,8 +17,10 @@ defmodule SpreedlyAirlinesElixir.Router do
     pipe_through :browser # Use the default browser stack
 
     get "/", PageController, :index
-    get "/transactions", PageController, :transactions
-    get "/flights", PageController, :flights
+    get "/transactions", TransactionController, :index
+    get "/transactions/:token", TransactionController, :show
+    resources "/flights", FlightController, only: [:index, :show]
+    post "/flights/purchase", FlightController, :purchase
   end
 
   # Other scopes may use custom stacks.

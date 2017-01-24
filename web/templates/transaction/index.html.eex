@@ -1,0 +1,26 @@
+<div>
+<h3>View Latest Transactions</h3>
+
+  <table class="table table-striped">
+    <thead>
+      <tr>  
+        <th>Token</th>
+        <th>Transaction Type</th>
+        <th>Created At</th>
+        <th>Updated At</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      <%= for t <- @transactions do %>
+      <tr> 
+        <td><%= t["token"] %></td>
+        <td><%= t["transaction_type"] %></td>
+        <td><%= t["created_at"] %></td>
+        <td><%= t["updated_at"] %></td>
+        <td><%= link("Detail", to: transaction_path(@conn, :show, t["token"]), class: "btn btn-primary btn-xs", role: "button") %></td>
+      </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>
