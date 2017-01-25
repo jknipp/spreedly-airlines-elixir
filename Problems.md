@@ -49,4 +49,6 @@ SpreedlyExpress.setDisplayOptions({
 });
 ```
 
-6) https://docs.spreedly.com/reference/api/v1/#purchase returns 200 not 201
+6) https://docs.spreedly.com/reference/api/v1/#purchase POST returns 200 not 201
+
+7) https://docs.spreedly.com/reference/api/v1/#deliver POST returns 200 not 201

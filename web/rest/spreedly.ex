@@ -6,7 +6,8 @@ defmodule Spreedly do
   @endpoint Application.get_env(:spreedly_airlines_elixir, SpreedlyAirlinesElixir.Endpoint)[:base_url]
   @key Application.get_env(:spreedly_airlines_elixir, SpreedlyAirlinesElixir.Endpoint)[:env_key]
   @secret Application.get_env(:spreedly_airlines_elixir, SpreedlyAirlinesElixir.Endpoint)[:access_secret]
-  @gateway Application.get_env(:spreedly_airlines_elixir, SpreedlyAirlinesElixir.Endpoint)[:gateway_token]
+  @gateway_token Application.get_env(:spreedly_airlines_elixir, SpreedlyAirlinesElixir.Endpoint)[:gateway_token]
+  @receiver_token Application.get_env(:spreedly_airlines_elixir, SpreedlyAirlinesElixir.Endpoint)[:receiver_token]
 
   defmodule Payment do
     @derive [Poison.Encoder]
@@ -26,12 +27,16 @@ defmodule Spreedly do
     get!("/v1/transactions/#{token}.json")
   end
 
-  def purchase(transaction, gateway_token \\ @gateway) do
+  def purchase(transaction, gateway_token \\ @gateway_token) do
     post!("/v1/gateways/#{gateway_token}/purchase.json", transaction)
   end
 
-  def send_to_receiver() do 
+  def create_receiver(receiver) do
+    post!("/v1/receivers.json", receiver)
+  end
 
+  def deliver_to_receiver(delivery, receiver_token \\ @receiver_token) do 
+    post!("/v1/receivers/#{receiver_token}/deliver.json", delivery)
   end
 
   def create_credit_card(payment_method) do

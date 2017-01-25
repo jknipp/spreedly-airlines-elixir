@@ -47,8 +47,42 @@ defmodule SpreedlyTest do
     response = Spreedly.purchase(transaction)
     assert %HTTPoison.Response{status_code: 422, body: body} = response, "purchase made with bad card failed to process"
     
-     assert "Unable to process the purchase transaction." = body["transaction"]["message"]
+    assert "Unable to process the purchase transaction." = body["transaction"]["message"]
   end
+
+  test "creates HTTP receiver successfully" do
+    payload = build_receiver()
+    response = Spreedly.create_receiver(payload)
+    assert %HTTPoison.Response{status_code: 201, body: body} = response, "failed to create HTTP receiver"
+    
+    IO.inspect(body)
+    assert "retained" = body["receiver"]["state"]
+    assert body["receiver"]["token"] != nil
+    assert payload.receiver.hostnames == body["receiver"]["hostnames"]
+  end
+
+  test "deliver to HTTP receiver successfully" do
+    payment_method_token = create_payment_method_token(good_payment_method())
+    payload = build_delivery(payment_method_token)
+
+    response = Spreedly.deliver_to_receiver(payload)
+    assert %HTTPoison.Response{status_code: 200, body: body} = response, "failed to send to HTTP receiver"
+    
+    assert "Succeeded!" = body["transaction"]["message"]
+    assert "DeliverPaymentMethod" = body["transaction"]["transaction_type"]
+    assert body["transaction"]["token"] != nil
+    assert payload.delivery.url == body["transaction"]["url"]
+    assert 200 == body["transaction"]["response"]["status"]
+  end
+
+  defp create_payment_method_token(payment_method) do
+    response = Spreedly.create_credit_card(payment_method)
+    assert %HTTPoison.Response{status_code: 201, body: body} = response, "did not create card successfully"
+
+    # get payment method token
+    body["transaction"]["payment_method"]["token"]
+  end
+
 
   defp good_payment_method do
     %{ payment_method: %{
@@ -78,11 +112,22 @@ defmodule SpreedlyTest do
     }
   end
 
-  defp create_payment_method_token(payment_method) do
-    response = Spreedly.create_credit_card(payment_method)
-    assert %HTTPoison.Response{status_code: 201, body: body} = response, "did not create card successfully"
-
-    # get payment method token
-    body["transaction"]["payment_method"]["token"]
+  defp build_receiver do 
+    %{
+        receiver: %{
+            receiver_type: "test",
+            hostnames: "http://posttestserver.com"
+        }
+    }
+  end
+  
+  defp build_delivery(payment_method_token) do
+    %{ delivery: %{
+        payment_method_token: payment_method_token,
+        url: "http://posttestserver.com/post.php",
+        headers: "Content-Type: application/json",
+        body: "{ \"flight_id\": \"1\", \"card_number\": \"{{credit_card_number}}\" }"
+      }
+    }
   end
 end
