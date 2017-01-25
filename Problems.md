@@ -48,3 +48,5 @@ SpreedlyExpress.setDisplayOptions({
   "first_name": "First Last"
 });
 ```
+
+6) https://docs.spreedly.com/reference/api/v1/#purchase returns 200 not 201

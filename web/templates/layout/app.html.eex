@@ -27,7 +27,9 @@
         </div><!-- /.container-fluid -->
       </nav>
 
+      <p class="alert alert-success" role="alert"><%= get_flash(@conn, :success) %></p>
       <p class="alert alert-info" role="alert"><%= get_flash(@conn, :info) %></p>
+      <p class="alert alert-warning" role="alert"><%= get_flash(@conn, :warning) %></p>
       <p class="alert alert-danger" role="alert"><%= get_flash(@conn, :error) %></p>
 
       <main role="main">
@@ -37,5 +39,6 @@
     </div> <!-- /container -->
     <script src="https://core.spreedly.com/iframe/express-2.min.js"></script>
     <script src="<%= static_path(@conn, "/js/app.js") %>"></script>
+    <%= render_existing @view_module, "scripts." <> @view_template, assigns %>
   </body>
 </html>

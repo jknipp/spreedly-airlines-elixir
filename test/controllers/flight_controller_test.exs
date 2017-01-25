@@ -6,13 +6,14 @@ defmodule SpreedlyAirlinesElixir.FlightControllerTest do
 
   test "lists all entries on index", %{conn: conn} do
     conn = get conn, flight_path(conn, :index)
-    assert html_response(conn, 200) =~ ~r"Listing Spreedly Airlines Flights"
+    assert html_response(conn, 200) =~ ~r"Spreedly Airlines Flights"
   end
 
   test "shows chosen resource", %{conn: conn} do
     flight = 1
     conn = get conn, flight_path(conn, :show, flight)
-    assert html_response(conn, 200) =~ "Flight Details"
+    assert html_response(conn, 200) =~ "Flight Info"
+    assert html_response(conn, 200) =~ "Passenger Info"
   end
 
   # TODO - FIX THIS TEST

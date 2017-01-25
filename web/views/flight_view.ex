@@ -10,4 +10,5 @@ defmodule SpreedlyAirlinesElixir.FlightView do
       "5" => %{:number => "8756", :airline => "Spreedly Airlines", :from => "AMA", :to => "CDG", :price => 1472.34}
     }
   end
+
 end

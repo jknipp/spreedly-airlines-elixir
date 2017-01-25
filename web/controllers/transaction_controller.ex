@@ -10,9 +10,11 @@ defmodule SpreedlyAirlinesElixir.TransactionController do
     txns = []
 
     case response do
-      %HTTPoison.Response{status_code: 200, body: body} -> conn
+      %HTTPoison.Response{status_code: 200, body: body} -> 
+        conn
         |> render("index.html", transactions: Poison.decode!(body)["transactions"])
-      _ -> conn 
+      _ -> 
+        conn 
         |> put_flash(:error, "No transactions found, Spreedly responded with response code #{response.status_code} !")
         |> render("index.html", transactions: txns)
     end
@@ -22,11 +24,12 @@ defmodule SpreedlyAirlinesElixir.TransactionController do
     response = Spreedly.show_transaction(token)
     
     case response do
+
       %HTTPoison.Response{status_code: 200, body: body} -> conn
         |> render("show.html", transactions: Poison.decode!(body)["transaction"], raw: body)
       _ -> conn 
-        |> put_flash(:error, "Transaction not found, Spreedly responded with response code #{response.status_code} !")
-        |> render("show.html")
+        |> put_flash(:error, "Transaction not found, Spreedly responded with response code #{response.status_code} for token #{token}!")
+        |> render("show.html", raw: [])
     end
   end
 end

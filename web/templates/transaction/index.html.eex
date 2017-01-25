@@ -4,20 +4,26 @@
   <table class="table table-striped">
     <thead>
       <tr>  
-        <th>Token</th>
         <th>Transaction Type</th>
         <th>Created At</th>
-        <th>Updated At</th>
+        <th>State</th>
+        <th>Amount</th>
+        <th>Retain?</th>
+        <th>Response</th>
+        <th>Last 4</th>
         <th></th>
       </tr>
     </thead>
     <tbody>
       <%= for t <- @transactions do %>
       <tr> 
-        <td><%= t["token"] %></td>
         <td><%= t["transaction_type"] %></td>
         <td><%= t["created_at"] %></td>
-        <td><%= t["updated_at"] %></td>
+        <td><%= t["state"] %></td>
+        <td><%= t["amount"] %></td>
+        <td><%= t["retain_on_success"] %></td>
+        <td><%= t["response"]["message"] %></td>
+        <td><%= t["payment_method"]["last_four_digits"] %></td>
         <td><%= link("Detail", to: transaction_path(@conn, :show, t["token"]), class: "btn btn-primary btn-xs", role: "button") %></td>
       </tr>
       <% end %>

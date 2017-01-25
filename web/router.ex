@@ -19,9 +19,14 @@ defmodule SpreedlyAirlinesElixir.Router do
     get "/", PageController, :index
     get "/transactions", TransactionController, :index
     get "/transactions/:token", TransactionController, :show
-    resources "/flights", FlightController, only: [:index, :show]
-    post "/flights/purchase", FlightController, :purchase
-  end
+
+    scope "/flights" do 
+      get "/", FlightController, :index
+      get "/:id", FlightController, :show
+      post "/purchase", FlightController, :purchase
+      get "/purchase/confirmation", FlightController, :confirmation
+    end 
+end
 
   # Other scopes may use custom stacks.
   # scope "/api", SpreedlyAirlinesElixir do

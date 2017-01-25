@@ -28,7 +28,7 @@
   </div>
   <div class="panel-body">
 
-    <%= form_for @conn, "", [class: "form-horizontal", id: :flight_form,  as: :flight_form], fn form -> %>
+    <%= form_for @conn, flight_path(@conn, :purchase), [class: "form-horizontal", id: :flight_form,  as: :flight_form], fn form -> %>
       <div class="form-group">
         <label for="inputFullName" class="col-sm-2 control-label">Full Name</label>
         <div class="col-sm-10">
@@ -54,7 +54,7 @@
       <%= hidden_input(form, :payment_method_token) %>
       <div class="form-group">
         <div class="col-sm-offset-2 col-sm-10">
-          <button type="button" class="btn btn-primary" onclick="handlePurchase();">Checkout</button>
+          <button id="checkout" type="button" class="btn btn-primary" onclick="handlePurchase();">Checkout</button>
         </div>
       </div>
     <% end %>

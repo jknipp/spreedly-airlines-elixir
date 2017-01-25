@@ -1,6 +1,0 @@
-<h2>New flight</h2>
-
-<%= render "form.html", changeset: @changeset,
-                        action: flight_path(@conn, :create) %>
-
-<%= link "Back", to: flight_path(@conn, :index) %>

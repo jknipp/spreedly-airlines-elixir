@@ -1,0 +1,48 @@
+<div class="panel panel-primary">
+  <div class="panel-heading">
+    <h3 class="panel-title">Flight Info</h3>
+  </div>
+  <div class="panel-body">
+    <dl class="dl-horizontal">
+      <dt>Airline</dt>
+      <dd id="airline"><%= @flight.airline %></dd>
+    </dl>
+    <dl class="dl-horizontal">
+      <dt>Flight Number</dt>
+      <dd id="flight_number">#<%= @flight.number %></dd>
+    </dl>
+    <dl class="dl-horizontal">
+      <dt>Flight Info</dt>
+      <dd id="flight_info"><%= @flight.from %> to <%= @flight.to %></dd>
+    </dl>
+    <dl class="dl-horizontal">
+      <dt>Trip Total</dt>
+      <dd id="total"><%= Number.Currency.number_to_currency(@flight.price) %></dd>
+    </dl>
+  </div>
+</div>
+
+<div class="panel panel-primary">
+  <div class="panel-heading">
+    <h3 class="panel-title">Passenger Info</h3>
+  </div>
+  <div class="panel-body">
+    <dl class="dl-horizontal">
+      <dt>Full Name</dt>
+      <dd id="full_name"><%= @user.full_name %></dd>
+    </dl>
+    <dl class="dl-horizontal">
+      <dt>Email</dt>
+      <dd id="email"><%= @user.email %></dd>
+    </dl>
+    <dl class="dl-horizontal">
+      <dt>Payment Info Saved?</dt>
+      <dd id="payment_info_saved"><%= @user.save_payment_info %></dd>
+    </dl>
+  </div>
+</div>
+
+
+<div>
+  <%= link "View Flights", to: flight_path(@conn, :index) %>
+</div>

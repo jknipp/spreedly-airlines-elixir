@@ -5,7 +5,7 @@
     <h3 class="panel-title">Raw Json</h3>
   </div>
   <div class="panel-body">
-    <pre>
+    <pre id="raw">
         <%= @raw %>
     </pre>
   </div>

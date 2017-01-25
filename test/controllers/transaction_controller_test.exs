@@ -6,7 +6,7 @@ defmodule SpreedlyAirlinesElixir.TransactionControllerTest do
 
   test "lists all entries on index", %{conn: conn} do
     conn = get conn, transaction_path(conn, :index)
-    assert html_response(conn, 200) =~ "Listing transactions"
+    assert html_response(conn, 200) =~ "View Latest Transactions"
   end
 
   # test "renders form for new resources", %{conn: conn} do
@@ -31,11 +31,10 @@ defmodule SpreedlyAirlinesElixir.TransactionControllerTest do
   #   assert html_response(conn, 200) =~ "Show transaction"
   # end
 
-  # test "renders page not found when id is nonexistent", %{conn: conn} do
-  #   assert_error_sent 404, fn ->
-  #     get conn, transaction_path(conn, :show, -1)
-  #   end
-  # end
+  test "renders transaction not found when id is nonexistent", %{conn: conn} do
+    conn = get conn, transaction_path(conn, :show, -1)
+    assert html_response(conn, 200) =~ "Transaction not found"
+  end
 
   # test "renders form for editing chosen resource", %{conn: conn} do
   #   transaction = Repo.insert! %Transaction{}
@@ -50,16 +49,4 @@ defmodule SpreedlyAirlinesElixir.TransactionControllerTest do
   #   assert Repo.get_by(Transaction, @valid_attrs)
   # end
 
-  # test "does not update chosen resource and renders errors when data is invalid", %{conn: conn} do
-  #   transaction = Repo.insert! %Transaction{}
-  #   conn = put conn, transaction_path(conn, :update, transaction), transaction: @invalid_attrs
-  #   assert html_response(conn, 200) =~ "Edit transaction"
-  # end
-
-  # test "deletes chosen resource", %{conn: conn} do
-  #   transaction = Repo.insert! %Transaction{}
-  #   conn = delete conn, transaction_path(conn, :delete, transaction)
-  #   assert redirected_to(conn) == transaction_path(conn, :index)
-  #   refute Repo.get(Transaction, transaction.id)
-  # end
 end

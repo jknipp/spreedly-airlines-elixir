@@ -37,4 +37,5 @@ config :phoenix, :stacktrace_depth, 20
 config :spreedly_airlines_elixir, SpreedlyAirlinesElixir.Endpoint,
   base_url: "https://core.spreedly.com",
   env_key: "VoypMN17B1VZQcWsxkoKIW2hvbU",
-  access_secret: "9ifOr8xjla71SAklGvxyf4lJgfMWUKM9MGCsODKxdz1tTkQFEiznAlQ9xpfCEO4a"
+  access_secret: "9ifOr8xjla71SAklGvxyf4lJgfMWUKM9MGCsODKxdz1tTkQFEiznAlQ9xpfCEO4a",
+  gateway_token: "EinedeTu7HzwQK38QiWYqxwJzv7"
