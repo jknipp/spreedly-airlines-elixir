@@ -36,6 +36,7 @@ defmodule SpreedlyAirlinesElixir.Mixfile do
      {:cowboy, "~> 1.0"},
      {:number, "~> 0.4.2"},
      {:httpoison, "~> 0.10.0"},
-     {:poison, "~> 2.0"}]
+     {:poison, "~> 2.0"},
+     {:mock, "~> 0.2.0", only: :test}]
   end
 end

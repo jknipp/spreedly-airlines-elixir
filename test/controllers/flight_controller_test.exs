@@ -16,15 +16,28 @@ defmodule SpreedlyAirlinesElixir.FlightControllerTest do
     assert html_response(conn, 200) =~ "Passenger Info"
   end
 
-  # TODO - FIX THIS TEST
   test "renders page not found when id is nonexistent", %{conn: conn} do
-    assert_error_sent :not_found, fn ->
-      get conn, flight_path(conn, :show, -1)
-    end
+    conn = get conn, flight_path(conn, :show, -1)
+    assert html_response(conn, 404) =~ "Page not found"
   end
 
   test "sends 404 id is nonexistent", %{conn: conn} do
     conn = get conn, flight_path(conn, :show, -1)
     assert html_response(conn, 404)
   end
+
+  # test "makes successful purchase", %{conn: conn} do
+  #   conn = get conn, flight_path(conn, :show, -1)
+  #   assert html_response(conn, 404)
+  # end
+
+  # test "makes unsuccessful purchase", %{conn: conn} do
+  #   conn = get conn, flight_path(conn, :show, -1)
+  #   assert html_response(conn, 404)
+  # end
+
+  # test "show confirmation page", %{conn: conn} do
+  #   conn = get conn, flight_path(conn, :show, -1)
+  #   assert html_response(conn, 404)
+  # end
 end

@@ -6,6 +6,8 @@ defmodule SpreedlyAirlinesElixir.FlightController do
 
   require Logger
   
+  @spreedly Spreedly
+
   def index(conn, _params) do
     render(conn, "index.html")
   end
@@ -14,7 +16,7 @@ defmodule SpreedlyAirlinesElixir.FlightController do
     flight = find_flight(flight_params["id"])
     transaction = build_transaction(flight, flight_params)
 
-    response = Spreedly.purchase(transaction)
+    response = @spreedly.purchase(transaction)
 
     case response do 
 

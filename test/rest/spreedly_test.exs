@@ -26,7 +26,7 @@ defmodule SpreedlyTest do
   end
 
   test "creates successful purchase using test card" do
-    payment_method_token = create_payment_method(good_payment_method())
+    payment_method_token = create_payment_method_token(good_payment_method())
 
     transaction = %Transaction{transaction: %Payment{payment_method_token: payment_method_token, amount: "100"}}
     response = Spreedly.purchase(transaction)
@@ -41,18 +41,16 @@ defmodule SpreedlyTest do
 
 
   test "sends unsuccessful purchase using bad test card" do
-    payment_method_token = create_payment_method(bad_payment_method())
+    payment_method_token = create_payment_method_token(bad_payment_method())
 
     transaction = %Transaction{transaction: %Payment{payment_method_token: payment_method_token, amount: "100000000"}}
     response = Spreedly.purchase(transaction)
     assert %HTTPoison.Response{status_code: 422, body: body} = response, "purchase made with bad card failed to process"
     
-     data = Poison.decode!(body)
-    #  IO.inspect data
-     assert "Unable to process the purchase transaction." = data["transaction"]["message"]
+     assert "Unable to process the purchase transaction." = body["transaction"]["message"]
   end
 
-  def good_payment_method do
+  defp good_payment_method do
     %{ payment_method: %{
         credit_card: %{
           first_name: "Joe",
@@ -66,7 +64,7 @@ defmodule SpreedlyTest do
     }
   end
 
-  def bad_payment_method do
+  defp bad_payment_method do
     %{ payment_method: %{
         credit_card: %{
           first_name: "Joe",
@@ -80,16 +78,11 @@ defmodule SpreedlyTest do
     }
   end
 
-  defp create_payment_method(payment_method) do
+  defp create_payment_method_token(payment_method) do
     response = Spreedly.create_credit_card(payment_method)
     assert %HTTPoison.Response{status_code: 201, body: body} = response, "did not create card successfully"
 
     # get payment method token
-    data = Poison.decode!(body)["transaction"]
-    payment_method_token = data["payment_method"]["token"]
-    # IO.inspect data
-    # IO.inspect payment_method_token
-
-    payment_method_token
+    body["transaction"]["payment_method"]["token"]
   end
 end
