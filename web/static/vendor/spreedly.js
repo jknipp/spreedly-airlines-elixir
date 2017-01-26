@@ -1,4 +1,4 @@
-var environment_key = "VoypMN17B1VZQcWsxkoKIW2hvbU";
+var environment_key = "D7zlEmeIJBaHxjQU9DKK5Bn7kON";
 
 SpreedlyExpress.init(environment_key, {
     "sidebar_top_description": "Crash free since 2003", 

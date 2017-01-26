@@ -21,10 +21,10 @@ config :logger, :console,
 # Spreedly settings
 config :spreedly_airlines_elixir, Spreedly.Api,
   base_url: "https://core.spreedly.com",
-  env_key: "VoypMN17B1VZQcWsxkoKIW2hvbU",
+  env_key: "D7zlEmeIJBaHxjQU9DKK5Bn7kON",
   access_secret: "9ifOr8xjla71SAklGvxyf4lJgfMWUKM9MGCsODKxdz1tTkQFEiznAlQ9xpfCEO4a",
-  gateway_token: "EinedeTu7HzwQK38QiWYqxwJzv7",
-  receiver_token: "BkB0jqBzB70EpNkBhhBQT88dgJf"
+  gateway_token: "SGsZDEjO8p6g2lHYDesaPzGsMPD",
+  receiver_token: "YgLkLoHSQUTMALPc8MO3mKNbqSl"
   
 config :spreedly_airlines_elixir, :spreedly, Spreedly
 

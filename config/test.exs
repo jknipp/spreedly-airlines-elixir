@@ -11,3 +11,11 @@ config :spreedly_airlines_elixir, SpreedlyAirlinesElixir.Endpoint,
 config :logger, level: :debug
 
 config :spreedly_airlines_elixir, :spreedly, Spreedly.Mock
+
+config :spreedly_airlines_elixir, Spreedly.Api,
+  base_url: "https://core.spreedly.com",
+  env_key: "VoypMN17B1VZQcWsxkoKIW2hvbU",
+  access_secret: "9ifOr8xjla71SAklGvxyf4lJgfMWUKM9MGCsODKxdz1tTkQFEiznAlQ9xpfCEO4a",
+  gateway_token: "EinedeTu7HzwQK38QiWYqxwJzv7",
+  receiver_token: "BkB0jqBzB70EpNkBhhBQT88dgJf"
+  
