@@ -39,6 +39,10 @@
       <dt>Payment Info Saved?</dt>
       <dd id="payment_info_saved"><%= @user.save_payment_info %></dd>
     </dl>
+      <dl class="dl-horizontal">
+      <dt>Delivered to Receiver?</dt>
+      <dd id="payment_info_saved"><%= @user.send_to_receiver %></dd>
+    </dl>
   </div>
 </div>
 

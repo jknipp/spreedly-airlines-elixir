@@ -2,8 +2,16 @@ defmodule SpreedlyAirlinesElixir.FlightControllerTest do
   use SpreedlyAirlinesElixir.ConnCase, async: true
   use ExUnit.Case, async: true
 
-  setup do
-      {:ok, spreedly: Application.get_env(:spreedly_airlines_elixir, :spreedly)} 
+  setup %{conn: conn} do
+    session = Plug.Session.init(store: :cookie, key: "test", signing_salt: "pepper")
+
+    # Setup session for testing
+    session_conn = conn
+    |> Plug.Session.call(session)
+    |> Plug.Conn.fetch_session
+    |> put_session(:flight_details, build_purchase_params("valid_token", "true", "true")["flight_form"])
+
+    {:ok, conn: session_conn, spreedly: Application.get_env(:spreedly_airlines_elixir, :spreedly)} 
   end
 
   @valid_attrs %{"id" => 1}
@@ -34,34 +42,55 @@ defmodule SpreedlyAirlinesElixir.FlightControllerTest do
   test "makes successful purchase only", %{conn: conn} do
     params = build_purchase_params()
     conn = post conn, flight_path(conn, :purchase, params)
-    assert redirected_to(flight_path(conn, :confirmation))
-    # assert html_response(conn, 302) =~ "Successfully purchased"
-    # Verify retained = false
+
+    assert redirected_to(conn) == flight_path(conn, :confirmation)
+
+    conn = get conn, flight_path(conn, :confirmation)
+    assert html_response(conn, 200)
+
+    assert conn.resp_body =~ "Successfully purchased "
+    assert conn.resp_body =~ "Retain on success? false"
     # Verify delivery = false
   end
 
   test "makes successful purchase and deliver to receiver only", %{conn: conn} do
-    params = build_purchase_params("")
+    params = build_purchase_params("valid_token", false, true)
     conn = post conn, flight_path(conn, :purchase, params)
-    assert html_response(conn, 200) =~ "Successfully purchased"
-    # Check response for delivered
-    # Verify retained = false
+    assert redirected_to(conn) == flight_path(conn, :confirmation)
+
+    conn = get conn, flight_path(conn, :confirmation)
+    assert html_response(conn, 200)
+
+    assert conn.resp_body =~ "Successfully purchased "
+    assert conn.resp_body =~ "Retain on success? false"
+    # Verify delivery = false
   end
 
   test "makes successful purchase and retain payment only", %{conn: conn} do
-    params = build_purchase_params("")
+    params = build_purchase_params("valid_token", true, false)
     conn = post conn, flight_path(conn, :purchase, params)
-    assert html_response(conn, 200) =~ "Successfully purchased"
+    assert redirected_to(conn) == flight_path(conn, :confirmation)
 
-    # Check response for retained
+    conn = get conn, flight_path(conn, :confirmation)
+    assert html_response(conn, 200)
+
+    assert conn.resp_body =~ "Successfully purchased "
+    assert conn.resp_body =~ "Retain on success? true"
     # Verify delivered false
+
   end
 
   test "makes successful purchase, retain payment, and deliver to receiver", %{conn: conn} do
-    params = build_purchase_params("")
+    params = build_purchase_params("valid_token", true, true)
     conn = post conn, flight_path(conn, :purchase, params)
-    assert html_response(conn, 200) =~ "Successfully purchased"
-    # Check response for retained
+    assert redirected_to(conn) == flight_path(conn, :confirmation)
+
+    conn = get conn, flight_path(conn, :confirmation)
+    assert html_response(conn, 200)
+    
+    assert conn.resp_body =~ "Successfully purchased "
+    assert conn.resp_body =~ "Retain on success? true"
+
     # Check response for delivered
   end
 
@@ -71,20 +100,22 @@ defmodule SpreedlyAirlinesElixir.FlightControllerTest do
     assert html_response(conn, 200) =~ "Failed to purchase flight"
   end
 
-  # test "show confirmation page", %{conn: conn} do
-  #   conn = get conn, flight_path(conn, :show, -1)
-  #   assert html_response(conn, 404)
-  # end
+  test "show confirmation page", %{conn: conn} do
+    conn = get conn, flight_path(conn, :confirmation)
+    assert html_response(conn, 200)
+    assert conn.resp_body =~ "Flight Info"
+  end
 
   defp build_purchase_params(payment_method_token \\ "valid_token", 
-    save_payment_info \\ "false", send_to_receiver \\ "false") do
+    save_payment_info \\ false, send_to_receiver \\ false) do
 
-    %{flight_form: %{ 
-      "id": 1,
-      "payment_method_token": payment_method_token,
-      "email": "test@spreedly.com",
-      "save_payment_info": save_payment_info,
-      "send_to_receiver": send_to_receiver
+    %{"flight_form" => %{ 
+      "id" =>  "1",
+      "payment_method_token" => payment_method_token,
+      "email" => "test@spreedly.com",
+      "full_name" => "Jared Knipp",
+      "save_payment_info" => "#{save_payment_info}",
+      "send_to_receiver" => "#{send_to_receiver}"
       }
     }
   end

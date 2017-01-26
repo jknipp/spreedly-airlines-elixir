@@ -5,7 +5,7 @@ defmodule Spreedly.Mock do
     successful_list_response()
   end
 
-  def list_transactions("asc") do
+  def list_transactions() do
     failed_list_response()
   end
 
@@ -29,7 +29,7 @@ defmodule Spreedly.Mock do
   end
 
   # Purchase and save payment
-  def purchase(%Spreedly.Transaction { transaction:  %Spreedly.Payment{
+  def purchase(%Spreedly.Transaction { transaction:  %Spreedly.Payment{ 
     payment_method_token: "valid_token", retain_on_success: "true"  }}) do
   
     successful_purchase_response(true)
@@ -53,7 +53,7 @@ defmodule Spreedly.Mock do
 
 
   defp successful_list_response do
-    %HTTPoison.Response{body: %{"transactions" => [%{"amount" => 147234,
+   {:ok, %{"transactions" => [%{"amount" => 147234,
         "api_urls" => [%{"referencing_transaction" => []}],
         "created_at" => "2017-01-25T23:29:06Z", "currency_code" => "USD",
         "description" => "Spreedly Airlines Flight #8756, AMA to CDG",
@@ -114,38 +114,16 @@ defmodule Spreedly.Mock do
         "token" => "I4e22M0sgu5jNtYejUzRrDBSxA0",
         "transaction_type" => "AddPaymentMethod",
         "updated_at" => "2017-01-25T23:29:06Z"}
-    ]},
-    headers: [{"Date", "Wed, 25 Jan 2017 23:38:03 GMT"},
-    {"Content-Type", "application/json; charset=utf-8"},
-    {"Content-Length", "28137"}, {"Connection", "keep-alive"},
-    {"X-Frame-Options", "SAMEORIGIN"}, {"X-XSS-Protection", "1; mode=block"},
-    {"X-Content-Type-Options", "nosniff"},
-    {"ETag", "W/\"708244c15f24390d8a9a970a61a7c193\""},
-    {"Cache-Control", "max-age=0, private, must-revalidate"},
-    {"X-Request-Id", "apqvv4d9dotirt75egd0.core_3db715eaab0ca269"},
-    {"Server", "nginx"},
-    {"Strict-Transport-Security", "max-age=31536000; includeSubdomains;"}],
-    status_code: 200}
+      ]}
+   }
   end
 
   defp failed_list_response do
-    %HTTPoison.Response{body: %{"transactions" => []},
-        headers: [{"Date", "Wed, 25 Jan 2017 23:38:03 GMT"},
-        {"Content-Type", "application/json; charset=utf-8"},
-        {"Content-Length", "28137"}, {"Connection", "keep-alive"},
-        {"X-Frame-Options", "SAMEORIGIN"}, {"X-XSS-Protection", "1; mode=block"},
-        {"X-Content-Type-Options", "nosniff"},
-        {"ETag", "W/\"708244c15f24390d8a9a970a61a7c193\""},
-        {"Cache-Control", "max-age=0, private, must-revalidate"},
-        {"X-Request-Id", "apqvv4d9dotirt75egd0.core_3db715eaab0ca269"},
-        {"Server", "nginx"},
-        {"Strict-Transport-Security", "max-age=31536000; includeSubdomains;"}],
-        status_code: 422
-    }
+    {:error, %{"transactions" => []}}
   end
 
   defp successful_show_transaction_response do
-    %HTTPoison.Response{body: %{"transaction" => %{"amount" => 147234,
+    {:ok, %{"transaction" => %{"amount" => 147234,
         "api_urls" => [%{"referencing_transaction" => []}],
         "created_at" => "2017-01-25T23:29:06Z", "currency_code" => "USD",
         "description" => "Spreedly Airlines Flight #8756, AMA to CDG",
@@ -183,36 +161,19 @@ defmodule Spreedly.Mock do
         "phone_number" => nil, "state" => nil, "zip" => nil},
         "state" => "succeeded", "succeeded" => true,
         "token" => "AbCfqKD8ri6tq2PCU2xAMKAb1tf", "transaction_type" => "Purchase",
-        "updated_at" => "2017-01-25T23:29:06Z"}},
-    headers: [{"Date", "Thu, 26 Jan 2017 03:22:19 GMT"},
-    {"Content-Type", "application/json; charset=utf-8"},
-    {"Content-Length", "2058"}, {"Connection", "keep-alive"},
-    {"X-Frame-Options", "SAMEORIGIN"}, {"X-XSS-Protection", "1; mode=block"},
-    {"X-Content-Type-Options", "nosniff"},
-    {"ETag", "W/\"1a89b64c5f4776b2beb18c1d39818377\""},
-    {"Cache-Control", "max-age=0, private, must-revalidate"},
-    {"X-Request-Id", "apr35ppijkvj66987kig.core_d38aa3567a453950"},
-    {"Server", "nginx"},
-    {"Strict-Transport-Security", "max-age=31536000; includeSubdomains;"}],
-    status_code: 200
+        "updated_at" => "2017-01-25T23:29:06Z"}
+      }
     }
   end
 
   defp failed_show_transaction_response do
-    %HTTPoison.Response{body: %{"errors" => [%{"key" => "errors.transaction_not_found",
-        "message" => "Unable to find the transaction 1."}]},
-        headers: [{"Date", "Thu, 26 Jan 2017 03:25:53 GMT"},
-        {"Content-Type", "application/json; charset=utf-8"}, {"Content-Length", "97"},
-        {"Connection", "keep-alive"}, {"X-Frame-Options", "SAMEORIGIN"},
-        {"X-XSS-Protection", "1; mode=block"}, {"X-Content-Type-Options", "nosniff"},
-        {"Cache-Control", "no-cache"},
-        {"X-Request-Id", "apr37dtp8n0v22pq9r1g.core_f258d8d8034d63ea"},
-        {"Server", "nginx"}], status_code: 404
+    {:error, %{"errors" => [%{"key" => "errors.transaction_not_found",
+        "message" => "Unable to find the transaction 1."}]}
     }
   end
 
   defp successful_purchase_response(retain_on_success) do
-    %HTTPoison.Response{body: %{"transaction" => %{"amount" => 19212,
+    {:ok, %{"transaction" => %{"amount" => 19212,
       "api_urls" => [%{"referencing_transaction" => []}],
       "created_at" => "2017-01-26T15:43:25Z", "currency_code" => "USD",
       "description" => "Spreedly Airlines Flight #4151, DFW to SFO",
@@ -251,22 +212,12 @@ defmodule Spreedly.Mock do
         "phone_number" => nil, "state" => nil, "zip" => nil},
       "state" => "succeeded", "succeeded" => true,
       "token" => "EF8PCpa8M5crWkxEZPjjugU4Rbh", "transaction_type" => "Purchase",
-      "updated_at" => "2017-01-26T15:43:25Z"}},
-    headers: [{"Date", "Thu, 26 Jan 2017 15:43:25 GMT"},
-      {"Content-Type", "application/json; charset=utf-8"},
-      {"Content-Length", "2055"}, {"Connection", "keep-alive"},
-      {"X-Frame-Options", "SAMEORIGIN"}, {"X-XSS-Protection", "1; mode=block"},
-      {"X-Content-Type-Options", "nosniff"}, {"X-Spreedly-Test", "true"},
-      {"ETag", "W/\"c827638620c126ecf51e84d9afea7d74\""},
-      {"Cache-Control", "max-age=0, private, must-revalidate"},
-      {"X-Request-Id", "aprdp1i195khd6f7sa40.core_bc7761988be53a93"},
-      {"Server", "nginx"},
-      {"Strict-Transport-Security", "max-age=31536000; includeSubdomains;"}],
-    status_code: 200}
+      "updated_at" => "2017-01-26T15:43:25Z"}}
+      }
   end
 
   defp successful_purchase_delivery() do
-    %HTTPoison.Response{body: %{"transaction" => %{"created_at" => "2017-01-26T15:43:25Z",
+    {:ok, %{"transaction" => %{"created_at" => "2017-01-26T15:43:25Z",
      "message" => "Succeeded!",
      "payment_method" => %{"number" => "XXXX-XXXX-XXXX-1111",
        "first_name" => "Jared", "shipping_country" => nil, "company" => nil,
@@ -294,23 +245,13 @@ defmodule Spreedly.Mock do
      "token" => "NmkEV1axRNJ1Kj5VPcjDcici4p2",
      "transaction_type" => "DeliverPaymentMethod",
      "updated_at" => "2017-01-26T15:43:25Z",
-     "url" => "http://posttestserver.com/post.php"}},
-  headers: [{"Date", "Thu, 26 Jan 2017 15:43:25 GMT"},
-    {"Content-Type", "application/json; charset=utf-8"},
-    {"Content-Length", "1791"}, {"Connection", "keep-alive"},
-    {"X-Frame-Options", "SAMEORIGIN"}, {"X-XSS-Protection", "1; mode=block"},
-    {"X-Content-Type-Options", "nosniff"},
-    {"ETag", "W/\"6e411ee1da46257cfb9e42f77a647c0b\""},
-    {"Cache-Control", "max-age=0, private, must-revalidate"},
-    {"X-Request-Id", "aprdp1k06cbcg02c4gag.core_6c08a69641529721"},
-    {"Server", "nginx"},
-    {"Strict-Transport-Security", "max-age=31536000; includeSubdomains;"}],
-  status_code: 200}
+     "url" => "http://posttestserver.com/post.php"}}
+    }
 
   end
 
   defp failed_purchase_response do
-    %HTTPoison.Response{body: %{"transaction" => %{"amount" => 19212,
+    {:error, %{"transaction" => %{"amount" => 19212,
         "api_urls" => [%{"referencing_transaction" => []}],
         "created_at" => "2017-01-26T04:16:30Z", "currency_code" => "USD",
         "description" => "Spreedly Airlines Flight #4151, DFW to SFO",
@@ -347,15 +288,9 @@ defmodule Spreedly.Mock do
         "phone_number" => nil, "state" => nil, "zip" => nil},
         "state" => "gateway_processing_failed", "succeeded" => false,
         "token" => "Vd6XGnkKANDBFG7zxs98sOgugSX", "transaction_type" => "Purchase",
-        "updated_at" => "2017-01-26T04:16:30Z"}},
-    headers: [{"Date", "Thu, 26 Jan 2017 04:16:30 GMT"},
-    {"Content-Type", "application/json; charset=utf-8"},
-    {"Content-Length", "2084"}, {"Connection", "keep-alive"},
-    {"X-Frame-Options", "SAMEORIGIN"}, {"X-XSS-Protection", "1; mode=block"},
-    {"X-Content-Type-Options", "nosniff"}, {"X-Spreedly-Test", "true"},
-    {"Cache-Control", "no-cache"},
-    {"X-Request-Id", "apr3ujbl8iodckkg743g.core_6eb2d0c20d2d9d31"},
-    {"Server", "nginx"}], status_code: 422}
+        "updated_at" => "2017-01-26T04:16:30Z"}
+      }
+    }
   end
 
 end

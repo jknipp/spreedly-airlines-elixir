@@ -14,21 +14,18 @@ defmodule SpreedlyAirlinesElixir.FlightController do
     flight_id = params["id"]
     flight = find_flight(flight_id)
 
-    response = build_transaction(flight, params) |> @spreedly.purchase()
-    IO.inspect response
-
-    response2 = deliver_to_receiver(params["send_to_receiver"], params["payment_method_token"], flight_id)
-    IO.inspect response2
+    response = make_purchase(flight, params)
+    delivery_response = deliver_to_receiver(params["send_to_receiver"], params["payment_method_token"], flight_id)
 
     case response do 
-      %HTTPoison.Response{status_code: 200, body: body} -> conn
+      {:ok, body} -> conn
         |> put_flash(:success, 
           "Successfully purchased #{flight.airline} Flight ##{flight.number}! Spreedly responded w/ #{body["transaction"]["response"]["message"]} ")
         |> put_flash(:info, "Retain on success? #{body["transaction"]["retain_on_success"]}")
         |> put_session(:flight_details, params)
         |> redirect(to: flight_path(conn, :confirmation))
-      _ -> conn
-        |> put_flash(:error, "Failed to purchase flight. Response from Spreedly -> #{response.body["transaction"]["message"]}")
+      {:error, body} -> conn
+        |> put_flash(:error, "Failed to purchase flight. Response from Spreedly -> #{body["transaction"]["message"]}")
         |> render("show.html", id: params["id"], flight: flight)
     end
   end
@@ -52,6 +49,17 @@ defmodule SpreedlyAirlinesElixir.FlightController do
     render(conn, "confirmation.html", flight: flight, user: user)
   end 
 
+
+  def make_purchase(flight, params) do
+    build_transaction(flight, params) |> @spreedly.purchase()
+  end
+
+  def deliver_to_receiver("true", payment_method_token, flight_id) do
+    build_delivery(payment_method_token, flight_id) |> @spreedly.deliver_to_receiver()
+  end
+
+  def deliver_to_receiver(_deliver, _payment_method_token, _flight_id), do: Logger.debug "Skipping delivery"
+  
   defp build_transaction(flight, params) do 
     %Spreedly.Transaction { transaction: 
       %Spreedly.Payment{
@@ -73,13 +81,6 @@ defmodule SpreedlyAirlinesElixir.FlightController do
       }
     }
   end 
-
-  defp deliver_to_receiver("true", payment_method_token, flight_id) do
-    build_delivery(payment_method_token, flight_id) |> @spreedly.deliver_to_receiver()
-  end
-  defp deliver_to_receiver(_deliver, payment_method_token, flight_id) do 
-    Logger.debug "Skipping delivery"
-  end
 
   defp find_flight(id) do
     SpreedlyAirlinesElixir.FlightView.flights[id]

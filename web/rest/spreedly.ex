@@ -20,31 +20,32 @@ defmodule Spreedly do
   end
 
   def list_transactions(order \\ "desc", since_token \\ nil) do 
-    get!("/v1/transactions.json?order=#{order}")
+    handle_resp(get!("/v1/transactions.json?order=#{order}"))
   end
 
   def show_transaction(token) do
-    get!("/v1/transactions/#{token}.json")
+    handle_resp(get!("/v1/transactions/#{token}.json"))
   end
 
   def create_credit_card(payment_method) do
-    post!("/v1/payment_methods.json", payment_method)
+    handle_resp(post!("/v1/payment_methods.json", payment_method))
   end
 
   def purchase(transaction, gateway_token \\ @gateway_token) do
-    post!("/v1/gateways/#{gateway_token}/purchase.json", transaction)
+    handle_resp(post!("/v1/gateways/#{gateway_token}/purchase.json", transaction))
   end
 
   def create_receiver(receiver) do
-    post!("/v1/receivers.json", receiver)
+    handle_resp(post!("/v1/receivers.json", receiver))
   end
 
   def deliver_to_receiver(delivery, receiver_token \\ @receiver_token) do 
-    post!("/v1/receivers/#{receiver_token}/deliver.json", delivery)
+    handle_resp(post!("/v1/receivers/#{receiver_token}/deliver.json", delivery))
   end
 
-
-
+  defp handle_resp(%HTTPoison.Response{status_code: sc, body: body}) when sc >= 200 and sc < 300, do: {:ok, body}
+  defp handle_resp(%HTTPoison.Response{status_code: sc, body: body}) when sc >= 400, do: {:error, body} 
+  
   defp headers(username \\ @key, password \\ @secret ) do
     encoded = Base.encode64("#{username}:#{password}")
     [{"Authorization", "Basic #{encoded}"}, {"Content-Type", "application/json"}]
@@ -66,8 +67,4 @@ defmodule Spreedly do
   def process_request_headers(headers) do
     headers()
   end
-
-  # defp process_status_code(status_code = 200), do: {:ok, body}
-  # defp process_status_code(_), do: {:error, body}
-
 end

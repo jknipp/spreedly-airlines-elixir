@@ -19,19 +19,18 @@ defmodule SpreedlyTest do
 
   test "lists all transactions", %{spreedly: spreedly} do
     response = spreedly.list_transactions()
-    IO.inspect response
-    assert %HTTPoison.Response{status_code: 200, body: body} = response, "failed to retrieve transaction list"
+    assert {:ok, body} = response, "failed to retrieve transaction list"
   end
 
   test "shows single transaction", %{spreedly: spreedly} do
     # Will need to create a transaction first for this to work consistently
     response = spreedly.show_transaction("5lS162AC7rJKsV9Fn3mdgQ5JD2x")
-    assert %HTTPoison.Response{status_code: 200, body: body} = response, "failed to retrieve transaction list"
+    assert {:ok, body} = response, "failed to retrieve transaction list"
   end
 
   test "sends 404 if transaciton token is nonexistent", %{spreedly: spreedly} do
     response = spreedly.show_transaction(-1)
-    assert %HTTPoison.Response{status_code: 404, body: body} = response, "did not return not found properly"
+    assert {:error, body} = response, "did not return not found properly"
   end
 
   test "creates successful purchase using test card", %{spreedly: spreedly} do
@@ -39,13 +38,13 @@ defmodule SpreedlyTest do
 
     transaction = %Transaction{transaction: %Payment{payment_method_token: payment_method_token, amount: "100"}}
     response = spreedly.purchase(transaction)
-    assert %HTTPoison.Response{status_code: 200, body: body} = response, "successfully made a purchase"
+    assert {:ok, body} = response, "successfully made a purchase"
   end
   
   test "sends 422 if no payment method corresponding to the payment method token", %{spreedly: spreedly} do
     transaction = %Transaction{transaction: %Payment{payment_method_token: "1234", amount: "100"}}
     response = spreedly.purchase(transaction)
-    assert %HTTPoison.Response{status_code: 422, body: body} = response, "somehow the payment method is on file"
+    assert {:error, body} = response, "somehow the payment method is on file"
   end
 
 
@@ -54,7 +53,7 @@ defmodule SpreedlyTest do
 
     transaction = %Transaction{transaction: %Payment{payment_method_token: payment_method_token, amount: "100000000"}}
     response = spreedly.purchase(transaction)
-    assert %HTTPoison.Response{status_code: 422, body: body} = response, "purchase made with bad card failed to process"
+    assert {:error, body} = response, "purchase made with bad card failed to process"
     
     assert "Unable to process the purchase transaction." = body["transaction"]["message"]
   end
@@ -62,9 +61,9 @@ defmodule SpreedlyTest do
   test "creates HTTP receiver successfully", %{spreedly: spreedly} do
     payload = build_receiver()
     response = spreedly.create_receiver(payload)
-    assert %HTTPoison.Response{status_code: 201, body: body} = response, "failed to create HTTP receiver"
+    assert {:ok, body} = response, "failed to create HTTP receiver"
     
-    IO.inspect(body)
+    # IO.inspect(body)
     assert "retained" = body["receiver"]["state"]
     assert body["receiver"]["token"] != nil
     assert payload.receiver.hostnames == body["receiver"]["hostnames"]
@@ -75,7 +74,7 @@ defmodule SpreedlyTest do
     payload = build_delivery(payment_method_token)
 
     response = spreedly.deliver_to_receiver(payload)
-    assert %HTTPoison.Response{status_code: 200, body: body} = response, "failed to send to HTTP receiver"
+    assert  {:ok, body} = response, "failed to send to HTTP receiver"
     
     assert "Succeeded!" = body["transaction"]["message"]
     assert "DeliverPaymentMethod" = body["transaction"]["transaction_type"]
@@ -86,7 +85,7 @@ defmodule SpreedlyTest do
 
   defp create_payment_method_token(payment_method, spreedly) do
     response = spreedly.create_credit_card(payment_method)
-    assert %HTTPoison.Response{status_code: 201, body: body} = response, "did not create card successfully"
+    assert  {:ok, body} = response, "did not create card successfully"
 
     # get payment method token
     body["transaction"]["payment_method"]["token"]
