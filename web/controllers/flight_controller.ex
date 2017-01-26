@@ -1,12 +1,10 @@
 defmodule SpreedlyAirlinesElixir.FlightController do
   use SpreedlyAirlinesElixir.Web, :controller
 
-  alias Spreedly.Transaction
-  alias Spreedly.Payment
-
   require Logger
-  
-  @spreedly Spreedly
+  require Spreedly
+
+  @spreedly Application.get_env(:spreedly_airlines_elixir, :spreedly)
 
   def index(conn, _params) do
     render(conn, "index.html")
@@ -17,20 +15,19 @@ defmodule SpreedlyAirlinesElixir.FlightController do
     flight = find_flight(flight_id)
 
     response = build_transaction(flight, params) |> @spreedly.purchase()
+    IO.inspect response
 
-    case params["send_to_receiver"] do
-      "true" -> build_delivery(params["payment_method_token"], flight_id) |> @spreedly.deliver_to_receiver()
-      _ -> Logger.debug "Skipping delivery"
-    end
+    response2 = deliver_to_receiver(params["send_to_receiver"], params["payment_method_token"], flight_id)
+    IO.inspect response2
 
     case response do 
       %HTTPoison.Response{status_code: 200, body: body} -> conn
         |> put_flash(:success, 
           "Successfully purchased #{flight.airline} Flight ##{flight.number}! Spreedly responded w/ #{body["transaction"]["response"]["message"]} ")
+        |> put_flash(:info, "Retain on success? #{body["transaction"]["retain_on_success"]}")
         |> put_session(:flight_details, params)
         |> redirect(to: flight_path(conn, :confirmation))
-      _ -> 
-        conn
+      _ -> conn
         |> put_flash(:error, "Failed to purchase flight. Response from Spreedly -> #{response.body["transaction"]["message"]}")
         |> render("show.html", id: params["id"], flight: flight)
     end
@@ -40,7 +37,9 @@ defmodule SpreedlyAirlinesElixir.FlightController do
     flight = find_flight(id)
 
     case flight do
-      nil -> conn |> put_status(:not_found) |> render(SpreedlyAirlinesElixir.ErrorView, "404.html")
+      nil -> conn 
+        |> put_status(:not_found) 
+        |> render(SpreedlyAirlinesElixir.ErrorView, "404.html")
       _ -> render(conn, "show.html", [id: id, flight: flight])
     end
   end
@@ -53,10 +52,9 @@ defmodule SpreedlyAirlinesElixir.FlightController do
     render(conn, "confirmation.html", flight: flight, user: user)
   end 
 
-
   defp build_transaction(flight, params) do 
-    %Transaction { transaction: 
-      %Payment{
+    %Spreedly.Transaction { transaction: 
+      %Spreedly.Payment{
         payment_method_token: params["payment_method_token"], 
         amount: trunc(flight.price * 100), 
         email: params["email"],
@@ -66,7 +64,7 @@ defmodule SpreedlyAirlinesElixir.FlightController do
     }
   end
 
-  def build_delivery(payment_method_token, id) do
+  defp build_delivery(payment_method_token, id) do
     %{ delivery: %{
         payment_method_token: payment_method_token,
         url: "http://posttestserver.com/post.php",
@@ -75,6 +73,13 @@ defmodule SpreedlyAirlinesElixir.FlightController do
       }
     }
   end 
+
+  defp deliver_to_receiver("true", payment_method_token, flight_id) do
+    build_delivery(payment_method_token, flight_id) |> @spreedly.deliver_to_receiver()
+  end
+  defp deliver_to_receiver(_deliver, payment_method_token, flight_id) do 
+    Logger.debug "Skipping delivery"
+  end
 
   defp find_flight(id) do
     SpreedlyAirlinesElixir.FlightView.flights[id]

@@ -3,29 +3,24 @@ defmodule SpreedlyAirlinesElixir.TransactionController do
 
   require Logger
 
-  @spreedly Spreedly
-
+  @spreedly Application.get_env(:spreedly_airlines_elixir, :spreedly)
 
   def index(conn, _params) do
     response = @spreedly.list_transactions()
-    txns = []
 
     case response do
-      %HTTPoison.Response{status_code: 200, body: body} -> 
-        conn
+      %HTTPoison.Response{status_code: 200, body: body} -> conn
         |> render("index.html", transactions: body["transactions"])
-      _ -> 
-        conn 
+      _ -> conn 
         |> put_flash(:error, "No transactions found, Spreedly responded with response code #{response.status_code} !")
-        |> render("index.html", transactions: txns)
+        |> render("index.html", transactions: [])
     end
   end
 
-  def show(conn, %{"token" => token}, spreedly \\ Spreedly) do
+  def show(conn, %{"token" => token}) do
     response = @spreedly.show_transaction(token)
-    
-    case response do
 
+    case response do
       %HTTPoison.Response{status_code: 200, body: body} -> conn
         |> render("show.html", transactions: body["transaction"], raw: Poison.encode!(body))
       _ -> conn 
@@ -33,4 +28,5 @@ defmodule SpreedlyAirlinesElixir.TransactionController do
         |> render("show.html", raw: [])
     end
   end
+
 end

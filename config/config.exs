@@ -18,6 +18,18 @@ config :logger, :console,
   format: "$time $metadata[$level] $message\n",
   metadata: [:request_id]
 
+# Spreedly settings
+config :spreedly_airlines_elixir, Spreedly.Api,
+  base_url: "https://core.spreedly.com",
+  env_key: "VoypMN17B1VZQcWsxkoKIW2hvbU",
+  access_secret: "9ifOr8xjla71SAklGvxyf4lJgfMWUKM9MGCsODKxdz1tTkQFEiznAlQ9xpfCEO4a",
+  gateway_token: "EinedeTu7HzwQK38QiWYqxwJzv7",
+  receiver_token: "BkB0jqBzB70EpNkBhhBQT88dgJf"
+  
+config :spreedly_airlines_elixir, :spreedly, Spreedly
+
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.
 import_config "#{Mix.env}.exs"
+
+

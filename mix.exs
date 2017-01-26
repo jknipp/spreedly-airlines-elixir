@@ -21,6 +21,7 @@ defmodule SpreedlyAirlinesElixir.Mixfile do
   end
 
   # Specifies which paths to compile per environment.
+  # Update this if you add extra paths in testing that need to be available in the app (i.e. Mocking)
   defp elixirc_paths(:test), do: ["lib", "web", "test/support"]
   defp elixirc_paths(_),     do: ["lib", "web"]
 

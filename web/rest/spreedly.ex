@@ -3,11 +3,11 @@ defmodule Spreedly do
 
   require Logger
   
-  @endpoint Application.get_env(:spreedly_airlines_elixir, SpreedlyAirlinesElixir.Endpoint)[:base_url]
-  @key Application.get_env(:spreedly_airlines_elixir, SpreedlyAirlinesElixir.Endpoint)[:env_key]
-  @secret Application.get_env(:spreedly_airlines_elixir, SpreedlyAirlinesElixir.Endpoint)[:access_secret]
-  @gateway_token Application.get_env(:spreedly_airlines_elixir, SpreedlyAirlinesElixir.Endpoint)[:gateway_token]
-  @receiver_token Application.get_env(:spreedly_airlines_elixir, SpreedlyAirlinesElixir.Endpoint)[:receiver_token]
+  @endpoint Application.get_env(:spreedly_airlines_elixir, Spreedly.Api)[:base_url]
+  @key Application.get_env(:spreedly_airlines_elixir, Spreedly.Api)[:env_key]
+  @secret Application.get_env(:spreedly_airlines_elixir, Spreedly.Api)[:access_secret]
+  @gateway_token Application.get_env(:spreedly_airlines_elixir, Spreedly.Api)[:gateway_token]
+  @receiver_token Application.get_env(:spreedly_airlines_elixir, Spreedly.Api)[:receiver_token]
 
   defmodule Payment do
     @derive [Poison.Encoder]
@@ -19,12 +19,16 @@ defmodule Spreedly do
     defstruct [transaction: %Payment{}]
   end
 
-  def list_transactions() do 
-    get!("/v1/transactions.json?order=desc")
+  def list_transactions(order \\ "desc", since_token \\ nil) do 
+    get!("/v1/transactions.json?order=#{order}")
   end
 
   def show_transaction(token) do
     get!("/v1/transactions/#{token}.json")
+  end
+
+  def create_credit_card(payment_method) do
+    post!("/v1/payment_methods.json", payment_method)
   end
 
   def purchase(transaction, gateway_token \\ @gateway_token) do
@@ -39,9 +43,7 @@ defmodule Spreedly do
     post!("/v1/receivers/#{receiver_token}/deliver.json", delivery)
   end
 
-  def create_credit_card(payment_method) do
-    post!("/v1/payment_methods.json", payment_method)
-  end
+
 
   defp headers(username \\ @key, password \\ @secret ) do
     encoded = Base.encode64("#{username}:#{password}")
@@ -64,4 +66,8 @@ defmodule Spreedly do
   def process_request_headers(headers) do
     headers()
   end
+
+  # defp process_status_code(status_code = 200), do: {:ok, body}
+  # defp process_status_code(_), do: {:error, body}
+
 end

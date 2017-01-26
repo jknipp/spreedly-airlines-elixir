@@ -12,7 +12,7 @@
   </head>
 
   <body>
-    <div class="container">
+    <div class="container-fluid">
       <nav class="navbar navbar-default">
         <div class="container-fluid">
           <!-- Collect the nav links, forms, and other content for toggling -->
@@ -28,7 +28,9 @@
       </nav>
 
       <p class="alert alert-success" role="alert"><%= get_flash(@conn, :success) %></p>
-      <p class="alert alert-info" role="alert"><%= get_flash(@conn, :info) %></p>
+      <%= for message <- flash_messages(@conn, :info) do %>
+        <p class="alert alert-info" role="alert"><%= get_flash(@conn, :info) %></p>
+      <%= end %>
       <p class="alert alert-warning" role="alert"><%= get_flash(@conn, :warning) %></p>
       <p class="alert alert-danger" role="alert"><%= get_flash(@conn, :error) %></p>
 
