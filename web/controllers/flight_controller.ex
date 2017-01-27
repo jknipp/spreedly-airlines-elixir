@@ -21,7 +21,6 @@ defmodule SpreedlyAirlinesElixir.FlightController do
       {:ok, body} -> conn
         |> put_flash(:success, 
           "Successfully purchased #{flight.airline} Flight ##{flight.number}! Spreedly responded w/ #{body["transaction"]["response"]["message"]} ")
-        |> put_flash(:info, "Retain on success? #{body["transaction"]["retain_on_success"]}")
         |> put_session(:flight_details, params)
         |> redirect(to: flight_path(conn, :confirmation))
       {:error, body} -> conn
